@@ -5,4 +5,6 @@ export interface BluetoothConnectionProps {
   isLoading: boolean;
   successfulConnection: boolean;
   bluetoothDeviceData: BluetoothDeviceData;
+  disabled: boolean;
+  handleBackButton: () => void
 }

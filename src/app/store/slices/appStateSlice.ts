@@ -12,7 +12,9 @@ const initialState: AppStateSliceInitialState = {
   isLogin: false,
   bluetoothConnection: {
     filters: {
-      getBatteryPercent: true,
+      acceptAllDevices: true,
+      getBatteryPercent: false,
+      filterByName: "",
     },
     isLoading: false,
   },
@@ -43,6 +45,9 @@ export const appStateSlice = createSlice({
     ) => {
       state.bluetoothConnection = action.payload;
     },
+    clearBluetoothConnection: (state) => {
+      state.bluetoothConnection = initialState.bluetoothConnection;
+    },
     setBluetoothDeviceData: (
       state,
       action: PayloadAction<BluetoothDeviceData>
@@ -58,6 +63,7 @@ export const {
   setIsLogin,
   setBluetoothConnection,
   setBluetoothDeviceData,
+  clearBluetoothConnection,
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

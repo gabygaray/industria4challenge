@@ -1,17 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase/firebase.config";
 import {
   getLogin,
   getLoginWithGoogle,
   getRegister,
 } from "../../app/services/firebase";
-import { auth } from "../../firebase/firebase.config";
-import { onAuthStateChanged } from "firebase/auth";
 
-import { useNavigate } from "react-router-dom";
-
-import { setIsLogin, setUser } from "../../app/store/slices/appStateSlice";
 import { useAppDispatch } from "../../app/store/hooks";
+import { setIsLogin, setUser } from "../../app/store/slices/appStateSlice";
 
 import {
   BackgroundContainer,
@@ -35,69 +35,55 @@ const inputsInitialValues = {
 
 export const Login: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState<"login" | "register">("login");
   const [inputsValues, setInputsValues] = useState(inputsInitialValues);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     setInputsValues(inputsInitialValues);
   }, [selectedTab]);
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setInputsValues((prevState) => ({ ...prevState, email: value }));
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputsValues((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setInputsValues((prevState) => ({ ...prevState, password: value }));
-  };
-
-  const handleRegister = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleRegister = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     getRegister(inputsValues.email, inputsValues.password);
     setInputsValues(inputsInitialValues);
     setSelectedTab("login");
   };
 
-  const handleLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     getLogin(inputsValues.email, inputsValues.password);
     setInputsValues(inputsInitialValues);
     setCurrentUser();
   };
 
-  const handleGoogleLogin = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleGoogleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     getLoginWithGoogle();
   };
 
   const setCurrentUser = () => {
-    const suscribed = () =>
-      onAuthStateChanged(auth, (currentUser) => {
-        if (!currentUser) {
-          console.log("No hay usuario logeado");
-          dispatch(setIsLogin(false));
-        } else {
-          dispatch(setIsLogin(true));
-          dispatch(
-            setUser({
-              uid: currentUser.uid,
-              displayName: currentUser.displayName,
-              email: currentUser.email,
-            })
-          );
-          navigate("/home");
-        }
-      });
-
-    return suscribed();
+    onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        dispatch(setIsLogin(false));
+      } else {
+        dispatch(setIsLogin(true));
+        dispatch(
+          setUser({
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            email: currentUser.email,
+          })
+        );
+        navigate("/home");
+      }
+    });
   };
 
   return (
@@ -110,7 +96,7 @@ export const Login: React.FC = (): React.ReactElement => {
       </BackgroundContainer>
 
       <LoginFormContainer>
-        <FormTitle>Ingresa o registrate</FormTitle>
+        <FormTitle>Ingresa o regístrate</FormTitle>
 
         <LoginForm>
           <StyledInput
@@ -118,32 +104,32 @@ export const Login: React.FC = (): React.ReactElement => {
             name="email"
             placeholder="Email"
             value={inputsValues.email}
-            onChange={(e) => handleEmailChange(e)}
+            onChange={handleInputChange}
           />
           <StyledInput
             type="password"
             name="password"
             placeholder="Contraseña"
             value={inputsValues.password}
-            onChange={handlePasswordChange}
+            onChange={handleInputChange}
           />
           {selectedTab === "login" ? (
             <>
-              <StyledButton type="submit" onClick={(e) => handleLogin(e)}>
+              <StyledButton type="submit" onClick={handleLogin}>
                 Ingresar
               </StyledButton>
-              <StyledButton type="submit" onClick={(e) => handleGoogleLogin(e)}>
+              <StyledButton type="submit" onClick={handleGoogleLogin}>
                 Ingresar con Google
               </StyledButton>
               <RegisterButtonContainer>
                 <RegisterLink onClick={() => setSelectedTab("register")}>
-                  Registarse
+                  Registrarse
                 </RegisterLink>
               </RegisterButtonContainer>
             </>
           ) : (
             <>
-              <StyledButton type="submit" onClick={(e) => handleRegister(e)}>
+              <StyledButton type="submit" onClick={handleRegister}>
                 Registrarse
               </StyledButton>
               <RegisterButtonContainer>

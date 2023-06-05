@@ -2,6 +2,8 @@ import { BluetoothIcon } from "../../../../assets/icons/BluetoothIcon";
 import { BluetoothConnectionProps } from "./bluetoothConnection.interface";
 
 import {
+  BackButton,
+  BackButtonContainer,
   BluetoothConnectionButton,
   Container,
   DataList,
@@ -20,10 +22,12 @@ export const BluetoothConnection: React.FC<BluetoothConnectionProps> = ({
   isLoading,
   successfulConnection,
   bluetoothDeviceData,
+  disabled,
+  handleBackButton,
 }): React.ReactElement => {
   const { batteryPercent, connected, id, name } = bluetoothDeviceData;
   return (
-    <Container>
+    <Container $disabled={disabled}>
       {!successfulConnection ? (
         <>
           <Title>Inicia tu búsqueda</Title>
@@ -64,6 +68,9 @@ export const BluetoothConnection: React.FC<BluetoothConnectionProps> = ({
                 </ItemValue>
               </ListItem>
             )}
+            <BackButtonContainer>
+              <BackButton onClick={handleBackButton}>Volver</BackButton>
+            </BackButtonContainer>
           </DataList>
         </>
       )}

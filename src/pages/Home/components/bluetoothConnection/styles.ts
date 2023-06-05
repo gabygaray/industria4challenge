@@ -5,7 +5,11 @@ display: flex;
 justify-content: center;
 align-items: center;`;
 
-export const Container = styled.div`
+export interface IContainer {
+  $disabled: boolean;
+}
+
+export const Container = styled.div<IContainer>`
   ${CENTERCONTENT}
   flex-direction: column;
   height: 50%;
@@ -17,6 +21,10 @@ export const Container = styled.div`
   border: 1px solid #d9d9d9;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   font-family: "Open Sans";
+
+  cursor: ${(props) => props.$disabled && "not-allowed"};
+  opacity: ${(props) => (props.$disabled ? 0.5 : 1)};
+  pointer-events: ${(props) => props.$disabled && "none"};
 `;
 
 export const Title = styled.div`
@@ -134,4 +142,25 @@ export const ItemName = styled.div`
 export const ItemValue = styled.div`
   font-weight: 400;
   font-size: 12px;
+`;
+
+export const BackButtonContainer = styled.div`
+  margin-top: 30px;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+`;
+
+export const BackButton = styled.div`
+  font-family: "Open Sans";
+  font-size: 20px;
+  text-decoration: underline;
+  color: #441c34;
+
+  cursor: pointer;
+  user-select: none;
+
+  &:active {
+    color: #8e5377;
+  }
 `;

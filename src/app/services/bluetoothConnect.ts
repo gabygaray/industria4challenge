@@ -8,15 +8,29 @@ import {
 export const getBluetoothConnection = async (
   filters: Filters
 ): Promise<BluetoothDeviceData> => {
-  const acceptAllDevicesFilter = { acceptAllDevices: true };
+  const acceptAllDevices = { acceptAllDevices: true };
 
-  const getBatteryServiceFilter = {
-    filters: [{ services: ["battery_service"] }],
-  };
+  const filtersSelected = filters.getBatteryPercent
+    ? {
+        filters: [
+          {
+            name: filters.filterByName,
+            services: ["battery_service"],
+          },
+        ],
+      }
+    : {
+        filters: [
+          {
+            name: filters.filterByName,
+          },
+        ],
+      };
 
-  const filter = filters.getBatteryPercent
-    ? getBatteryServiceFilter
-    : acceptAllDevicesFilter;
+  const filter =
+    filters.getBatteryPercent || Boolean(filters.filterByName)
+      ? filtersSelected
+      : acceptAllDevices;
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

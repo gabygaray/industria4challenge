@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getBluetoothConnection } from "../../../../app/services/bluetoothConnect";
 import { useAppDispatch, useAppSelector } from "../../../../app/store/hooks";
 import {
+  clearBluetoothConnection,
   setBluetoothConnection,
   setBluetoothDeviceData,
 } from "../../../../app/store/slices/appStateSlice";
@@ -13,12 +14,9 @@ export const BluetoothConnectionContainer: React.FC =
       (state) => state.appState
     );
     const { filters, isLoading } = bluetoothConnection;
+    const { acceptAllDevices, filterByName, getBatteryPercent } = filters;
 
     const [successfulConnection, setSuccessfulConnection] = useState(false);
-
-    useEffect(() => {
-      console.log(bluetoothDeviceData);
-    }, [bluetoothDeviceData]);
 
     const dispatch = useAppDispatch();
 
@@ -39,12 +37,19 @@ export const BluetoothConnectionContainer: React.FC =
       );
     };
 
+    const handleBackButton = () => {
+      setSuccessfulConnection(false);
+      dispatch(clearBluetoothConnection());
+    };
+
     return (
       <BluetoothConnection
         handleDeviceSearch={handleDeviceSearch}
         isLoading={isLoading}
         successfulConnection={successfulConnection}
         bluetoothDeviceData={bluetoothDeviceData}
+        disabled={!acceptAllDevices && !filterByName && !getBatteryPercent}
+        handleBackButton={handleBackButton}
       />
     );
   };

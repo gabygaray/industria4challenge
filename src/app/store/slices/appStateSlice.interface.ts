@@ -18,5 +18,7 @@ export interface BluetoothConnection {
 }
 
 export interface Filters {
+  acceptAllDevices: boolean;
   getBatteryPercent: boolean;
+  filterByName: string;
 }
